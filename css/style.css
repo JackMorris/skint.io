@@ -1,0 +1,127 @@
+/**********/
+/* Global */
+/**********/
+
+.input-field label {
+    color: #D1D1D1;
+}
+
+.input-field input[type=text]:focus + label {
+    color: #43a047;
+}
+
+.input-field input[type=text]:focus {
+    border-bottom: 1px solid #43a047;
+    box-shadow: 0 1px 0 0 #43a047;
+}
+
+.input-field input[type=text].valid {
+    border-bottom: 1px solid #43a047;
+    box-shadow: 0 1px 0 0 #43a047;
+}
+
+.section-header {
+    color: #9E9E9E;
+    font-family: 'courier', monospace;
+    text-align: center;
+    margin-top: 2.5em;
+}
+
+.details-header {
+    font-family: 'courier', monospace;
+    text-align: center;
+}
+
+/**********/
+/* Header */
+/**********/
+
+.header {
+    height: 18em;
+}
+
+.header .logo {
+    color: #ffffff;
+    font-family: 'courier', monospace;
+    font-size: 2em;
+    padding: 1em 0;
+    text-shadow: .1em .1em #2e7d32;
+}
+
+.gross-salary-container {
+    background-color: #ffffff;
+    border: 1px solid #388e3c;
+    border-radius: 2px;
+    padding: 2.5em 0px;
+    height: 7.5em;
+}
+
+.gross-salary {
+    margin-top: 2.3em;
+    padding-top: 1em;
+}
+
+.gross-salary input {
+    border-color: #ffffff;
+    font-size: 1.8em;
+    text-align: center;
+}
+
+.gross-salary label {
+    left: 0px;
+    text-align: center;
+    width: 100%;
+}
+
+/******************/
+/* Expenses input */
+/******************/
+
+.add-button {
+    margin: 0px auto;
+}
+
+.delete-button {
+    border-radius: 0px;
+    font-size: .7em;
+    height: 1.5em;
+    line-height: 1.5em;
+    padding: .4em;
+    padding-top: 0px;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+}
+
+/***********/
+/* Results */
+/***********/
+
+.results {
+    margin: -10px 0px;
+}
+
+.results div {
+    margin: 10px 0px;
+}
+
+.label {
+}
+
+.amount {
+    float: right;
+    font-family: 'courier', monospace;
+}
+
+.neg {
+    color: #f44336;
+}
+
+.divider {
+    background-color: #485E68;
+}
+
+.remaining {
+    text-align: center;
+    font-size: 1.8em;
+}
