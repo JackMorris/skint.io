@@ -55,6 +55,10 @@ function MonthlyExpense() {
 function ViewModel() {
     var self = this;
     self.grossSalary = ko.observable().extend({currency: {}});
+    self.calcEnabled = ko.computed(function() {
+        return (self.grossSalary() != null);
+    }, self);
+
     self.incomeTax = ko.computed(function() {
         var personalAllowance = 1060000 - Math.max(self.grossSalary() - 10000000, 0)*200;
         var taxableIncome = Math.max(self.grossSalary() - personalAllowance, 0);
@@ -108,10 +112,17 @@ function ViewModel() {
     }, self);
 
     self.addExpense = function() {
-        self.monthlyExpenses.push(new MonthlyExpense());
+        if (self.calcEnabled()) {
+            self.monthlyExpenses.push(new MonthlyExpense());
+        }
     };
     self.removeExpense = function(expense) {
-        self.monthlyExpenses.remove(expense);
+        if (self.monthlyExpenses().length == 1) {
+            self.monthlyExpenses()[0].name('');
+            self.monthlyExpenses()[0].cost(null);
+        } else {
+            self.monthlyExpenses.remove(expense);
+        }
     };
 }
 

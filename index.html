@@ -13,6 +13,7 @@
     <body>
         <div class="header z-depth-1 green darken-1">
             <div class="logo center">skint.io</div>
+            <div class="subtitle center">Simple budget planner for 2015/16. Enter your gross salary to get started.</div>
             <div class="container">
                 <div class="row">
                     <div class="col s12 offset-l3 l6 gross-salary-container">
@@ -31,16 +32,16 @@
                     <div class="section-header">Monthly Expenses</div>
                     <ul class="collection expenses" data-bind="foreach: monthlyExpenses">
                         <li class="collection-item input-field">
-                            <a class="waves-effect waves-light btn delete-button red darken-1" data-bind="click: $root.removeExpense">x</a>
-                            <input placeholder="Name" id="name" type="text" class="col s7" data-bind="value: name" />
-                            <input placeholder="Cost" id="cost" type="text" class="col offset-s1 s4" data-bind="value: cost.formatted" />
+                        <a class="btn delete-button disabled" data-bind="click: $root.removeExpense, css : { disabled: !$root.calcEnabled(), 'waves-effect waves-light red darken-1': $root.calcEnabled() }">x</a>
+                            <input placeholder="Name" id="name" type="text" class="col s7" data-bind="value: name, enable: $root.calcEnabled" />
+                            <input placeholder="Cost" id="cost" type="text" class="col offset-s1 s4" data-bind="value: cost.formatted, enable: $root.calcEnabled" />
                         </li>
                     </ul> 
                     <div class="center">
-                        <a class="green darken-1 waves-effect waves-light btn add-button" data-bind="click: addExpense">Add Expense</a>
+                        <a class="btn add-button disabled" data-bind="click: addExpense, css: { disabled: !calcEnabled(), 'green darken-1 waves-effect waves-light' : calcEnabled()}">Add Expense</a>
                     </div>
                 </div>
-                <div class="col s12 m6 l5">
+                <div class="col s12 m6 l5" data-bind="css : { resultsDisabled : !calcEnabled() }">
                     <div class="section-header">Balance Sheet</div>
                     <div class="card blue-grey darken-1">
                         <div class="card-content white-text results">
@@ -55,8 +56,8 @@
                     </div>
                     <div class="section-header">Remaining Each Month</div>
                     <div class="card blue-grey darken-1">
-                        <div class="remaining card-content white-text">
-                            <div data-bind="currency: monthlyRemaining"></div>
+                        <div class="card-content remaining">
+                            <div data-bind="currency: monthlyRemaining, css : { neg : monthlyRemaining() < 0 && calcEnabled() }"></div>
                        </div>
                     </div>
 

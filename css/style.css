@@ -37,15 +37,23 @@
 /**********/
 
 .header {
-    height: 18em;
+    height: 20em;
 }
 
 .header .logo {
     color: #ffffff;
     font-family: 'courier', monospace;
     font-size: 2em;
-    padding: 1em 0;
+    padding-top: 1.5em;
+    padding-bottom: 0.2em;
     text-shadow: .1em .1em #2e7d32;
+}
+
+.header .subtitle {
+    color: #f3f3f3;
+    font-size: 0.85em;
+    padding-bottom: 3.5em;
+    text-shadow: .05em .05em #2e7d32;
 }
 
 .gross-salary-container {
@@ -59,6 +67,7 @@
 .gross-salary {
     margin-top: 2.3em;
     padding-top: 1em;
+    color: #43a047;
 }
 
 .gross-salary input {
@@ -91,10 +100,15 @@
     position: absolute;
     right: 0px;
     top: 0px;
+    display: none;
 }
 
 .expenses li {
     height: 5em;
+}
+
+.expenses li:hover .delete-button {
+    display: block;
 }
 
 /***********/
@@ -118,7 +132,7 @@
 }
 
 .neg {
-    color: #f44336;
+    color: #e57373;
 }
 
 .divider {
@@ -126,6 +140,11 @@
 }
 
 .remaining {
+    color: #ffffff;
     text-align: center;
     font-size: 1.8em;
+}
+
+.resultsDisabled span, .resultsDisabled .remaining {
+    color: #435E69;
 }
