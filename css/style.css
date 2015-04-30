@@ -93,6 +93,10 @@
     top: 0px;
 }
 
+.expenses li {
+    height: 5em;
+}
+
 /***********/
 /* Results */
 /***********/

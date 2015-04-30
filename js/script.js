@@ -47,12 +47,17 @@ ko.bindingHandlers.currency = {
     }
 };
 
+function MonthlyExpense() {
+    this.name = ko.observable("");
+    this.cost = ko.observable().extend({currency: {}});
+}
+
 function ViewModel() {
-    this.grossSalary = ko.observable().extend({currency: {}});
-    this.incomeTax = ko.computed(function() {
-        console.log(this.grossSalary());
-        var personalAllowance = 1060000 - Math.max(this.grossSalary() - 10000000, 0)*200;
-        var taxableIncome = Math.max(this.grossSalary() - personalAllowance, 0);
+    var self = this;
+    self.grossSalary = ko.observable().extend({currency: {}});
+    self.incomeTax = ko.computed(function() {
+        var personalAllowance = 1060000 - Math.max(self.grossSalary() - 10000000, 0)*200;
+        var taxableIncome = Math.max(self.grossSalary() - personalAllowance, 0);
         if (taxableIncome <= 3178500) {
             // 20% band.
             return taxableIncome*0.2;
@@ -64,10 +69,10 @@ function ViewModel() {
             // 45% band.
             return (taxableIncome - 15000000)*0.45 + 5364300;
         }
-    }, this);
-    this.nationalInsurance = ko.computed(function() {
+    }, self);
+    self.nationalInsurance = ko.computed(function() {
         var personalAllowance = 806000;
-        var taxableIncome = Math.max(this.grossSalary() - personalAllowance, 0);
+        var taxableIncome = Math.max(self.grossSalary() - personalAllowance, 0);
         if (taxableIncome <= 3432000) {
             // 12% band.
             return taxableIncome * 0.12;
@@ -75,22 +80,39 @@ function ViewModel() {
             // 2% band.
             return (taxableIncome - 3432000)*0.02 + 411840;
         }
-    }, this);
-    this.studentLoan = ko.computed(function() {
-        return Math.max(this.grossSalary() - 2100000, 0)*0.09;
-    }, this);
-    this.netIncome = ko.computed(function() {
-        return this.grossSalary() - this.incomeTax() - this.nationalInsurance() - this.studentLoan();
-    }, this);
-    this.netMonthlyIncome = ko.computed(function() {
-        return this.netIncome() / 12;
-    }, this);
-    this.monthlyExpenses = ko.computed(function() {
-        return 0;
-    }, this);
-    this.monthlyRemaining = ko.computed(function() {
-        return this.netMonthlyIncome() - this.monthlyExpenses();
-    }, this);
+    }, self);
+    self.studentLoan = ko.computed(function() {
+        return Math.max(self.grossSalary() - 2100000, 0)*0.09;
+    }, self);
+    self.netIncome = ko.computed(function() {
+        return self.grossSalary() - self.incomeTax() - self.nationalInsurance() - self.studentLoan();
+    }, self);
+    self.netMonthlyIncome = ko.computed(function() {
+        return self.netIncome() / 12;
+    }, self);
+    self.monthlyExpenses = ko.observableArray([
+        new MonthlyExpense()
+    ]);
+    self.totalMonthlyExpenses = ko.computed(function() {
+        var total = 0;
+        for (var i = 0; i < self.monthlyExpenses().length; i++) {
+            var monthlyCost = self.monthlyExpenses()[i].cost();
+            if (monthlyCost != null) {
+                total += self.monthlyExpenses()[i].cost();
+            }
+        }
+        return total;
+    }, self);
+    self.monthlyRemaining = ko.computed(function() {
+        return self.netMonthlyIncome() - self.totalMonthlyExpenses();
+    }, self);
+
+    self.addExpense = function() {
+        self.monthlyExpenses.push(new MonthlyExpense());
+    };
+    self.removeExpense = function(expense) {
+        self.monthlyExpenses.remove(expense);
+    };
 }
 
 ko.applyBindings(new ViewModel());

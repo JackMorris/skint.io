@@ -29,15 +29,15 @@
            <div class="row">
                 <div class="col s12 m6 l7">
                     <div class="section-header">Monthly Expenses</div>
-                    <ul class="collection">
+                    <ul class="collection expenses" data-bind="foreach: monthlyExpenses">
                         <li class="collection-item input-field">
-                            <a class="waves-effect waves-light btn delete-button red darken-1">x</a>
-                            <input placeholder="Name" id="name" type="text" class="col s7" />
-                            <input placeholder="Cost" id="cost" type="text" class="col offset-s1 s4" />
+                            <a class="waves-effect waves-light btn delete-button red darken-1" data-bind="click: $root.removeExpense">x</a>
+                            <input placeholder="Name" id="name" type="text" class="col s7" data-bind="value: name" />
+                            <input placeholder="Cost" id="cost" type="text" class="col offset-s1 s4" data-bind="value: cost.formatted" />
                         </li>
                     </ul> 
                     <div class="center">
-                        <a class="green darken-1 waves-effect waves-light btn add-button">Add Expense</a>
+                        <a class="green darken-1 waves-effect waves-light btn add-button" data-bind="click: addExpense">Add Expense</a>
                     </div>
                 </div>
                 <div class="col s12 m6 l5">
@@ -50,7 +50,7 @@
                             <div><span class="label">Net Annual Income</label><span class="amount" data-bind="currency: netIncome"></span></div>
                             <div class="divider"></div>
                             <div><span class="label">Net Monthly Income</label><span class="amount" data-bind="currency: netMonthlyIncome"></span></div>
-                            <div><span class="label">Monthly Expenses</label><span class="amount" data-bind="currency: monthlyExpenses"></span></div>
+                            <div><span class="label">Monthly Expenses</label><span class="amount" data-bind="currency: totalMonthlyExpenses"></span></div>
                         </div>
                     </div>
                     <div class="section-header">Remaining Each Month</div>
