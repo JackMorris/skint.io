@@ -148,3 +148,22 @@
 .resultsDisabled span, .resultsDisabled .remaining {
     color: #435E69;
 }
+
+/**********/
+/* Footer */
+/**********/
+
+.footer {
+    color: #9E9E9E;
+    font-family: 'courier', monospace;
+    font-size: 0.8em;
+    margin-top: 2em;
+}
+
+.footer a:link, .footer a:visited {
+    color: #43a047;
+}
+
+.footer a:hover, .footer a:active {
+    color: #9E9E9E;
+}
