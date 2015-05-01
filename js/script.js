@@ -86,7 +86,7 @@ function ViewModel() {
         }
     }, self);
     self.studentLoan = ko.computed(function() {
-        return Math.max(self.grossSalary() - 2100000, 0)*0.09;
+        return Math.min(Math.max(self.grossSalary() - 2100000, 0)*0.09, 6000000);
     }, self);
     self.netIncome = ko.computed(function() {
         return self.grossSalary() - self.incomeTax() - self.nationalInsurance() - self.studentLoan();
