@@ -60,7 +60,7 @@ function ViewModel() {
     }, self);
 
     self.incomeTax = ko.computed(function() {
-        var personalAllowance = 1060000 - Math.max(self.grossSalary() - 10000000, 0)*200;
+        var personalAllowance = Math.max(0, 1060000 - Math.max(self.grossSalary() - 10000000, 0)*200);
         var taxableIncome = Math.max(self.grossSalary() - personalAllowance, 0);
         if (taxableIncome <= 3178500) {
             // 20% band.
