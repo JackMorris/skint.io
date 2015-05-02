@@ -30,12 +30,26 @@
         <div class="container">
            <div class="row">
                 <div class="col s12 m6 l7">
+                    <div class="section-header">Student Loan</div>
+                    <ul class="collection">
+                        <li class="collection-item">
+                            <div class="col l4 m12 s12">
+                                <a class="btn disabled student-loan-button" data-bind="css: { 'waves-effect waves-light' : calcEnabled(), 'disabled' : !calcEnabled(), 'green darken-1' : studentLoanOption() == 0 && calcEnabled(), 'blue-grey': studentLoanOption() != 0 && calcEnabled()}, click : function(d,e) { updateStudentLoanOption(0) }">Pre-2012</a>
+                            </div>
+                            <div class="col l4 m12 s12">
+                                <a class="btn disabled student-loan-button" data-bind="css: { 'waves-effect waves-light' : calcEnabled(), 'disabled' : !calcEnabled(), 'green darken-1' : studentLoanOption() == 1 && calcEnabled(), 'blue-grey': studentLoanOption() != 1 && calcEnabled()}, click : function(d,e) { updateStudentLoanOption(1) }">Post-2012</a>
+                            </div>
+                            <div class="col l4 m12 s12">
+                                <a class="btn disabled student-loan-button" data-bind="css: { 'waves-effect waves-light' : calcEnabled(), 'disabled' : !calcEnabled(), 'green darken-1' : studentLoanOption() == 2 && calcEnabled(), 'blue-grey': studentLoanOption() != 2 && calcEnabled()}, click : function(d,e) { updateStudentLoanOption(2) }">None</a>
+                            </div>
+                        </li>
+                    </ul>
                     <div class="section-header">Monthly Expenses</div>
                     <ul class="collection expenses" data-bind="foreach: monthlyExpenses">
                         <li class="collection-item input-field">
                         <a class="btn delete-button disabled" data-bind="click: $root.removeExpense, css : { disabled: !$root.calcEnabled(), 'waves-effect waves-light red darken-1': $root.calcEnabled() }">x</a>
-                            <input placeholder="Name" id="name" type="text" class="col s7" data-bind="value: name, enable: $root.calcEnabled" />
-                            <input placeholder="Cost" id="cost" type="text" class="expense-cost col offset-s1 s4" data-bind="value: cost.formatted, enable: $root.calcEnabled" />
+                        <input placeholder="Name" id="name" type="text" class="col s7" data-bind="value: name, enable: $root.calcEnabled" />
+                        <input placeholder="Cost" id="cost" type="text" class="expense-cost col offset-s1 s4" data-bind="value: cost.formatted, enable: $root.calcEnabled" />
                         </li>
                     </ul> 
                     <div class="center">
@@ -59,7 +73,7 @@
                     <div class="card blue-grey darken-1">
                         <div class="card-content remaining">
                             <div data-bind="currency: monthlyRemaining, css : { neg : monthlyRemaining() < 0 && calcEnabled() }">&nbsp;</div>
-                       </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -69,7 +83,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Scripts -->
         <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/knockout/3.3.0/knockout-min.js'></script>
         <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>

@@ -85,9 +85,20 @@ function ViewModel() {
             return (taxableIncome - 3432000)*0.02 + 411840;
         }
     }, self);
+    self.studentLoanOption = ko.observable(1);
+    self.updateStudentLoanOption = function(option) {
+        if (self.calcEnabled()) {
+            self.studentLoanOption(option);
+        }
+    }
     self.studentLoan = ko.computed(function() {
-        return Math.min(Math.max(self.grossSalary() - 2100000, 0)*0.09, 6000000);
+        if (self.studentLoanOption() == 2) {
+            return 0;
+        } 
+        var cutoff = self.studentLoanOption() == 0 ? 1733500 : 2100000;
+        return Math.min(Math.max(self.grossSalary() - cutoff, 0)*0.09, 6000000); 
     }, self);
+
     self.netIncome = ko.computed(function() {
         return self.grossSalary() - self.incomeTax() - self.nationalInsurance() - self.studentLoan();
     }, self);
