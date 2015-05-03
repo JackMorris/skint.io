@@ -54,9 +54,9 @@ ko.bindingHandlers.currency = {
 
 // Model class for a single monthly expense.
 
-function MonthlyExpense() {
-    this.name = ko.observable("");
-    this.cost = ko.observable().extend({currency: {}});
+function MonthlyExpense(initialName, initialCost) {
+    this.name = ko.observable(initialName);
+    this.cost = ko.observable(initialCost).extend({currency: {}});
 }
 
 
@@ -65,7 +65,7 @@ function MonthlyExpense() {
 function ViewModel() {
     var self = this;
 
-    self.grossSalary = ko.observable().extend({currency: {}});
+    self.grossSalary = ko.observable(store.get('grossSalary')).extend({currency: {}});
     self.calcEnabled = ko.computed(function() {
         return (self.grossSalary() != null);
     }, self);
@@ -98,7 +98,7 @@ function ViewModel() {
         }
     }, self);
 
-    self.studentLoanOption = ko.observable(1);
+    self.studentLoanOption = ko.observable(store.get('studentLoanOption') != null ? store.get('studentLoanOption') : 1);
     self.updateStudentLoanOption = function(option) {
         if (self.calcEnabled()) {
             self.studentLoanOption(option);
@@ -121,7 +121,7 @@ function ViewModel() {
     }, self);
 
     self.monthlyExpenses = ko.observableArray([
-        new MonthlyExpense()
+        new MonthlyExpense("", null)
     ]);
     self.totalMonthlyExpenses = ko.computed(function() {
         var total = 0;
@@ -140,7 +140,7 @@ function ViewModel() {
 
     self.addExpense = function() {
         if (self.calcEnabled()) {
-            self.monthlyExpenses.push(new MonthlyExpense());
+            self.monthlyExpenses.push(new MonthlyExpense("", null));
         }
     };
     self.removeExpense = function(expense) {
@@ -153,4 +153,33 @@ function ViewModel() {
     };
 }
 
-ko.applyBindings(new ViewModel());
+var viewModel = new ViewModel();
+ko.applyBindings(viewModel);
+
+window.onbeforeunload = function() {
+    // Save currenct state using store.js.
+    store.set('grossSalary', viewModel.grossSalary());
+    store.set('studentLoanOption', viewModel.studentLoanOption());
+    store.set('expenses', ko.toJSON(viewModel.monthlyExpenses()));
+}
+
+window.onload = function() {
+    // Update monthly expenses from store (salary/student loan option done directly).
+    var savedMonthlyExpenses = JSON.parse(store.get('expenses'));
+    if (savedMonthlyExpenses != null && savedMonthlyExpenses.length > 0) {
+        // Populare the monthyl expenses array. Remove current empty entry first.
+        viewModel.monthlyExpenses.pop();
+        for (var i = 0; i < savedMonthlyExpenses.length; i++) {
+            var savedExpense = savedMonthlyExpenses[i];
+            var name = savedExpense["name"];
+            var cost = savedExpense["cost"];
+            if (name.length > 0 || cost != null) {
+                viewModel.monthlyExpenses.push(new MonthlyExpense(savedExpense["name"], savedExpense["cost"]));
+            }
+        }
+        // Add in a blank expense if it turns out that we didn't add any.
+        if (viewModel.monthlyExpenses().length == 0) {
+            viewModel.monthlyExpenses.push(new MonthlyExpense("", null));
+        }
+    }
+}
