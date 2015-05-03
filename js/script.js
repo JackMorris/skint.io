@@ -158,14 +158,16 @@ function ViewModel() {
 var viewModel = new ViewModel();
 ko.applyBindings(viewModel);
 
-window.onbeforeunload = function() {
+var saveState = function() {
     // Save currenct state using store.js.
     store.set("grossSalary", viewModel.grossSalary());
     store.set("studentLoanOption", viewModel.studentLoanOption());
     store.set("expenses", ko.toJSON(viewModel.monthlyExpenses()));
 }
 
-window.onload = function() {
+window.onpagehide = saveState;
+
+var loadState = function() {
     if (store.get("grossSalary") != null) {
         // Activate green line under salary input if we have a saved salary.
         $("#gross-salary-input").addClass("valid");
@@ -199,3 +201,5 @@ window.onload = function() {
         }
     }
 }
+
+window.onpageshow = loadState;
