@@ -65,7 +65,7 @@ function MonthlyExpense(initialName, initialCost) {
 function ViewModel() {
     var self = this;
 
-    self.grossSalary = ko.observable(store.get('grossSalary')).extend({currency: {}});
+    self.grossSalary = ko.observable(store.get("grossSalary")).extend({currency: {}});
     self.calcEnabled = ko.computed(function() {
         return (self.grossSalary() != null);
     }, self);
@@ -98,7 +98,7 @@ function ViewModel() {
         }
     }, self);
 
-    self.studentLoanOption = ko.observable(store.get('studentLoanOption') != null ? store.get('studentLoanOption') : 1);
+    self.studentLoanOption = ko.observable(store.get("studentLoanOption") != null ? store.get("studentLoanOption") : 1);
     self.updateStudentLoanOption = function(option) {
         if (self.calcEnabled()) {
             self.studentLoanOption(option);
@@ -144,11 +144,13 @@ function ViewModel() {
         }
     };
     self.removeExpense = function(expense) {
-        if (self.monthlyExpenses().length == 1) {
-            self.monthlyExpenses()[0].name('');
-            self.monthlyExpenses()[0].cost(null);
-        } else {
-            self.monthlyExpenses.remove(expense);
+        if (self.calcEnabled()) {
+            if (self.monthlyExpenses().length == 1) {
+                self.monthlyExpenses()[0].name("");
+                self.monthlyExpenses()[0].cost(null);
+            } else {
+                self.monthlyExpenses.remove(expense);
+            }
         }
     };
 }
@@ -158,25 +160,39 @@ ko.applyBindings(viewModel);
 
 window.onbeforeunload = function() {
     // Save currenct state using store.js.
-    store.set('grossSalary', viewModel.grossSalary());
-    store.set('studentLoanOption', viewModel.studentLoanOption());
-    store.set('expenses', ko.toJSON(viewModel.monthlyExpenses()));
+    store.set("grossSalary", viewModel.grossSalary());
+    store.set("studentLoanOption", viewModel.studentLoanOption());
+    store.set("expenses", ko.toJSON(viewModel.monthlyExpenses()));
 }
 
 window.onload = function() {
+    if (store.get("grossSalary") != null) {
+        // Activate green line under salary input if we have a saved salary.
+        $("#gross-salary-input").addClass("valid");
+    }
+
     // Update monthly expenses from store (salary/student loan option done directly).
-    var savedMonthlyExpenses = JSON.parse(store.get('expenses'));
+    var savedMonthlyExpenses = JSON.parse(store.get("expenses"));
     if (savedMonthlyExpenses != null && savedMonthlyExpenses.length > 0) {
-        // Populare the monthyl expenses array. Remove current empty entry first.
+        // Remove current empty entry first.
         viewModel.monthlyExpenses.pop();
-        for (var i = 0; i < savedMonthlyExpenses.length; i++) {
-            var savedExpense = savedMonthlyExpenses[i];
-            var name = savedExpense["name"];
-            var cost = savedExpense["cost"];
-            if (name.length > 0 || cost != null) {
-                viewModel.monthlyExpenses.push(new MonthlyExpense(savedExpense["name"], savedExpense["cost"]));
+
+        // Remove all trailing empty entries.
+        while (savedMonthlyExpenses.length > 0) {
+            var lastExpense = savedMonthlyExpenses[savedMonthlyExpenses.length - 1];
+            if (lastExpense["name"] == "" && lastExpense["cost"] == null) {
+                savedMonthlyExpenses.pop();
+            } else {
+                break;
             }
         }
+
+        // Convert to observable MonthlyExpense instances, popular monthly expenses array.
+        for (var i = 0; i < savedMonthlyExpenses.length; i++) {
+            var savedExpense = savedMonthlyExpenses[i];
+            viewModel.monthlyExpenses.push(new MonthlyExpense(savedExpense["name"], savedExpense["cost"]));
+        }
+
         // Add in a blank expense if it turns out that we didn't add any.
         if (viewModel.monthlyExpenses().length == 0) {
             viewModel.monthlyExpenses.push(new MonthlyExpense("", null));
