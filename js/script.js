@@ -1,59 +1,70 @@
+// Functions to convert to/from formatted currency strings and pence.
+
+var toPence = function (currencyStr) {
+    var regex = /^£?(\d+)(\.(\d\d))?$/;
+    var match = regex.exec(currencyStr.replace(/,/g, ''));
+    if (match) {
+        var pence = parseInt(match[1]) * 100;
+        if (match[3] != undefined) {
+            // User has entered pence.
+            pence += parseInt(match[3]);
+        }
+        return pence;
+    }
+    return null;
+};
+
+var toCurrencyStr = function (pence) {
+    return "£" + (pence/100).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
+
+// Extender for formatted currency input/output.
+
 ko.extenders.currency = function (target) {
 
-    // Currency string -> count of pence.
-    var cleanInput = function (value) {
-        var regex = /^£?(\d+)(\.(\d\d))?$/
-        var match = regex.exec(value.replace(/,/g, ''));
-        if (match) {
-            var result = parseInt(match[1]) * 100;
-            if (match[3] != undefined) {
-                result += parseInt(match[3]);
-            }
-            return result;
-        }
-        return null;
-    };
-
-    // Count of pence -> currency string.
-    var format = function (value) {
-       return "£" + (value/100).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    };
-
-    // All we really do is add this 'formatted' thing, a secondary computed.
+    // Attach a new computed observable, allowing for formatted input/output.
     target.formatted = ko.computed({
         read: function () {
             if (target() == null) {
                 return null;
             }
-            // Format raw value before returning it.
-            return format(target());
+            return toCurrencyStr(target());
         },
-        write: function (value) {
-            // Clean up input, and update raw if different.
+        write: function (currencyStr) {
             target(0);
-            target(cleanInput(value));
+            target(toPence(currencyStr));
         }
     }); 
-
     return target;
 };
+
+
+// Binding for formatted currency output.
 
 ko.bindingHandlers.currency = {
     update: function(element, valueAccessor, allBindingsAccessor) {
         return ko.bindingHandlers.text.update(element,function() {
-            var value = +(ko.utils.unwrapObservable(valueAccessor()) || 0);
-            return "£" + (value/100).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+            var pence = +(ko.utils.unwrapObservable(valueAccessor()) || 0);
+            return toCurrencyStr(pence);
         });
     }
 };
+
+
+// Model class for a single monthly expense.
 
 function MonthlyExpense() {
     this.name = ko.observable("");
     this.cost = ko.observable().extend({currency: {}});
 }
 
+
+// View model.
+
 function ViewModel() {
     var self = this;
+
     self.grossSalary = ko.observable().extend({currency: {}});
     self.calcEnabled = ko.computed(function() {
         return (self.grossSalary() != null);
@@ -74,6 +85,7 @@ function ViewModel() {
             return (taxableIncome - 15000000)*0.45 + 5364300;
         }
     }, self);
+
     self.nationalInsurance = ko.computed(function() {
         var personalAllowance = 806000;
         var taxableIncome = Math.max(self.grossSalary() - personalAllowance, 0);
@@ -85,6 +97,7 @@ function ViewModel() {
             return (taxableIncome - 3432000)*0.02 + 411840;
         }
     }, self);
+
     self.studentLoanOption = ko.observable(1);
     self.updateStudentLoanOption = function(option) {
         if (self.calcEnabled()) {
@@ -102,9 +115,11 @@ function ViewModel() {
     self.netIncome = ko.computed(function() {
         return self.grossSalary() - self.incomeTax() - self.nationalInsurance() - self.studentLoan();
     }, self);
+
     self.netMonthlyIncome = ko.computed(function() {
         return self.netIncome() / 12;
     }, self);
+
     self.monthlyExpenses = ko.observableArray([
         new MonthlyExpense()
     ]);
@@ -118,6 +133,7 @@ function ViewModel() {
         }
         return total;
     }, self);
+
     self.monthlyRemaining = ko.computed(function() {
         return self.netMonthlyIncome() - self.totalMonthlyExpenses();
     }, self);

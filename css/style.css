@@ -23,8 +23,8 @@
 .section-header {
     color: #9E9E9E;
     font-family: 'courier', monospace;
-    text-align: center;
     margin-top: 2.5em;
+    text-align: center;
 }
 
 .details-header {
@@ -58,15 +58,15 @@
     background-color: #ffffff;
     border: 1px solid #388e3c;
     border-radius: 2px;
-    padding: 2.5em 0px;
     height: 7.5em;
     margin-top: 2em;
+    padding: 2.5em 0px;
 }
 
 .gross-salary {
+    color: #43a047;
     margin-top: 2.3em;
     padding-top: 1em;
-    color: #43a047;
 }
 
 .gross-salary input {
@@ -86,11 +86,11 @@
 /**********************/
 
 .student-loan-button {
-    width: 100%;
-    margin-bottom: .8em;
     font-size: .8em;
+    margin-bottom: .8em;
     padding-left: 0px;
     padding-right: 0px;
+    width: 100%;
 }
 
 /******************/
@@ -102,6 +102,7 @@
 }
 
 .delete-button {
+    display: none;
     border-radius: 0px;
     font-size: .7em;
     height: 1.5em;
@@ -111,7 +112,6 @@
     position: absolute;
     right: 0px;
     top: 0px;
-    display: none;
 }
 
 .expenses li {
@@ -138,9 +138,6 @@
     margin: 10px 0px;
 }
 
-.label {
-}
-
 .amount {
     float: right;
     font-family: 'courier', monospace;
@@ -156,9 +153,9 @@
 
 .remaining {
     color: #ffffff;
-    text-align: center;
     font-family: 'courier', monospace;
     font-size: 1.8em;
+    text-align: center;
 }
 
 .resultsDisabled span, .resultsDisabled .remaining {
