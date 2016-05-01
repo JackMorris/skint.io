@@ -71,30 +71,32 @@ function ViewModel() {
     }, self);
 
     self.incomeTax = ko.computed(function() {
-        var personalAllowance = Math.max(0, 1060000 - Math.max(self.grossSalary() - 10000000, 0)*50);
+        var personalAllowance = Math.max(0, 1100000 - Math.max(self.grossSalary() - 10000000, 0)*50);
         var taxableIncome = Math.max(self.grossSalary() - personalAllowance, 0);
-        if (taxableIncome <= 3178500) {
+        if (taxableIncome <= 3200000) {
             // 20% band.
             return taxableIncome*0.2;
         }
         else if (taxableIncome <= 15000000) {
             // 40% band.
-            return (taxableIncome - 3178500)*0.4 + 635700;
+            return (taxableIncome - 320000)*0.4 + 640000;
         } else {
             // 45% band.
-            return (taxableIncome - 15000000)*0.45 + 5364300;
+            return (taxableIncome - 15000000)*0.45 + 5364000;
         }
     }, self);
 
     self.nationalInsurance = ko.computed(function() {
-        var personalAllowance = 806000;
-        var taxableIncome = Math.max(self.grossSalary() - personalAllowance, 0);
-        if (taxableIncome <= 3432000) {
-            // 12% band.
-            return taxableIncome * 0.12;
+        var primaryThreshold = 806000;
+        var upperThreshold = 4300400;
+        if (self.grossSalary() < primaryThreshold) {
+            return 0;
+        } else if (self.grossSalary() < upperThreshold) {
+            // 12% band
+            return (self.grossSalary() - primaryThreshold)*0.12;
         } else {
-            // 2% band.
-            return (taxableIncome - 3432000)*0.02 + 411840;
+            // 2% band
+            return (upperThreshold - primaryThreshold)*0.12 + (self.grossSalary() - upperThreshold)*0.02;
         }
     }, self);
 
