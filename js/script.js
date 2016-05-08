@@ -79,7 +79,7 @@ function ViewModel() {
         }
         else if (taxableIncome <= 15000000) {
             // 40% band.
-            return (taxableIncome - 320000)*0.4 + 640000;
+            return (taxableIncome - 3200000)*0.4 + 640000;
         } else {
             // 45% band.
             return (taxableIncome - 15000000)*0.45 + 5364000;
